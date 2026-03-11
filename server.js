@@ -4,11 +4,12 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const db = new sqlite3.Database('./termini.db');
+const db = new sqlite3.Database(path.join(__dirname, 'database', 'termini.db'));
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public', 'html')));
 
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS services (
@@ -26,6 +27,32 @@ db.serialize(() => {
         status TEXT DEFAULT 'Na čekanju'
     )`);
 });
+
+//Routes for pages
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
+});
+
+// Route for the appointments page
+app.get('/rezervacija', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'html', 'rezervacija.html'));
+});
+
+// Route for the services page
+app.get('/usluge', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'html', 'usluge.html'));
+});
+
+// Route for statistics/analytics page
+app.get('/statistika', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'html', 'statistika.html'));
+});
+
+// Route for about page
+app.get('/o-nama', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'html', 'about.html'));
+});
+
 
 // API ZA USLUGE
 app.get('/api/services', (req, res) => {

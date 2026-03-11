@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "ready": "npm install express sqlite3 cors path"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "path": "^0.12.7",
+    "router": "^2.2.0",
+    "sqlite3": "^5.1.7"
+  }
+}

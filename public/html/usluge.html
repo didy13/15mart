@@ -2,13 +2,14 @@
 <html>
 <head>
     <title>TerminKO | Usluge</title>
-    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="/css/admin-style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <div class="app-container">
         <aside class="sidebar">
-            <div class="logo">Zakaži<span>SE</span></div>
-            <nav><a href="index.html">📊 Dashboard</a><a href="usluge.html" class="active">🛠️ Usluge</a></nav>
+            <a href="/"><div class="logo">Zakaži<span>SE</span></div></a>
+            <nav><a href="/">📊 Dashboard</a><a href="/usluge" class="active">🛠️ Usluge</a><a href="/rezervacija">📚 Rezervacija</a></nav>
         </aside>
         <main class="main-content">
             <header style="display:flex; justify-content:space-between; margin-bottom:2rem;">
@@ -24,6 +25,6 @@
             <button class="btn-primary" onclick="saveService()">Sačuvaj</button>
         </div>
     </div>
-    <script src="usluge.js"></script>
+    <script src="/js/usluge.js"></script>
 </body>
 </html>

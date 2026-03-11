@@ -36,7 +36,9 @@ Aplikacija se sastoji iz tri glavna dela:
     git clone https://github.com/korisnik/zakazivanje-termina.git
 
 2. Pripremi za rad:
+    ```bash
     npm run ready
 
 3. Pokreni aplikaciju:
+    ```bash
     node server.js

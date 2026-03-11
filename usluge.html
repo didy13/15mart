@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TerminKO | Upravljanje Uslugama</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">Termin<span>KO</span></div>
+            <nav>
+                <a href="index.html">📊 Kontrolna tabla</a>
+                <a href="usluge.html" class="active">🛠️ Usluge</a>
+            </nav>
+        </aside>
+
+        <!-- Glavni deo -->
+        <main class="main-content">
+            <header>
+                <h1>Upravljanje Uslugama</h1>
+                <!-- DUGME KOJE OTVARA MODAL -->
+                <button class="btn-primary" id="addServiceBtn" onclick="showServiceModal()">+ Nova usluga</button>
+            </header>
+
+            <section class="appointments-section">
+                <div class="section-header">
+                    <h2>Lista svih usluga</h2>
+                </div>
+                <div id="services-list" class="appointment-list">
+                    <!-- Ovde će JS učitati usluge -->
+                    <p>Učitavanje usluga...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL ZA DODAVANJE USLUGE -->
+    <div id="serviceModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Dodaj novu uslugu</h2>
+            
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 10px;">
+                <label>Naziv usluge</label>
+                <input type="text" id="sName" placeholder="Npr. Muško šišanje">
+                
+                <label>Cena (RSD)</label>
+                <input type="number" id="sPrice" placeholder="Npr. 1200">
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-outline" onclick="closeServiceModal()">Otkaži</button>
+                <button class="btn-primary" onclick="saveService()">Sačuvaj uslugu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="usluge.js"></script>
+</body>
+</html>

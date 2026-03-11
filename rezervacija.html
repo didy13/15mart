@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zakažite svoj termin | TerminKO</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Poseban stil za klijentsku stranu da bude centrirano */
+        body { justify-content: center; align-items: center; background: #f3f4f6; }
+        .client-container { background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 450px; margin: 20px; }
+        .client-logo { text-align: center; margin-bottom: 2rem; font-size: 1.8rem; font-weight: 700; }
+        .client-logo span { color: #4f46e5; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: #374151; }
+        input, select { width: 100%; padding: 0.8rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; }
+        .btn-full { width: 100%; padding: 1rem; background: #4f46e5; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-full:hover { background: #4338ca; }
+        #success-msg { display: none; text-align: center; color: #059669; background: #ecfdf5; padding: 1rem; border-radius: 8px; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+
+    <div class="client-container">
+        <div class="client-logo">Termin<span>KO</span></div>
+        <h2 style="text-align: center; margin-bottom: 0.5rem;">Zakažite termin</h2>
+        <p style="text-align: center; color: #6b7280; margin-bottom: 2rem;">Izaberite uslugu i željeno vreme.</p>
+
+        <div id="booking-form">
+            <div class="form-group">
+                <label for="clientName">Vaše ime i prezime</label>
+                <input type="text" id="clientName" placeholder="Unesite ime">
+            </div>
+
+            <div class="form-group">
+                <label for="clientService">Izaberite uslugu</label>
+                <select id="clientService">
+                    <option value="">Učitavanje usluga...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="clientTime">Vreme</label>
+                <input type="time" id="clientTime">
+            </div>
+
+            <button class="btn-full" onclick="bookAppointment()">Potvrdi rezervaciju</button>
+        </div>
+
+        <div id="success-msg">
+            <h3>Uspešno rezervisano!</h3>
+            <p>Vidimo se u zakazanom terminu.</p>
+            <button class="btn-outline" style="margin-top: 1rem; width: 100%;" onclick="location.reload()">Zakaži još jedan</button>
+        </div>
+    </div>
+
+    <script src="rezervacija.js"></script>
+</body>
+</html>

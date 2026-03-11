@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>TerminKO | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">Termin<span>KO</span></div>
+            <nav>
+                <a href="index.html" class="active">📊 Kontrolna tabla</a>
+                <a href="usluge.html">🛠️ Usluge</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>Današnji termini</h1>
+                <button class="btn-primary" id="openModalBtn">+ Novi termin</button>
+            </header>
+
+            <div class="appointment-list" id="appointment-list">
+                <!-- JS puni listu -->
+            </div>
+        </main>
+    </div>
+
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Zakaži termin</h2>
+            <input type="text" id="custName" placeholder="Ime klijenta">
+            
+            <label style="font-size: 0.8rem; color: gray;">Izaberite uslugu:</label>
+            <select id="serviceSelect">
+                <!-- JS puni opcije -->
+            </select>
+
+            <input type="time" id="appTime">
+            <div class="modal-footer">
+                <button class="btn-outline" id="closeModalBtn">Otkaži</button>
+                <button class="btn-primary" id="saveBtn">Sačuvaj</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

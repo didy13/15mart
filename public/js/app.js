@@ -18,41 +18,75 @@ async function loadDashboard() {
             return;
         }
 
-        list.innerHTML = appointments.map(a => `
-            <div class="appointment-card ${a.status === 'Završen' ? 'completed' : ''}">
-                <div style="width: 70px; font-weight: bold; color: #6366f1;">${a.time}</div>
+        list.innerHTML = appointments.map(a => {
+            // Ako stari termini nemaju status, računamo ih kao 'Na čekanju'
+            const status = a.status || 'Na čekanju'; 
+            let actionButtons = '';
+            
+            if (status === 'Na čekanju') {
+                actionButtons = `
+                    <button class="btn-complete" style="background: #3b82f6;" onclick="acceptApp(${a.id})">Prihvati</button>
+                    <button class="btn-complete" style="background: #ef4444;" onclick="cancelApp(${a.id})">Otkaži</button>
+                `;
+            } else if (status === 'Prihvaćen') {
+                actionButtons = `
+                    <button class="btn-complete" onclick="complete(${a.id})">Završi</button>
+                    <button class="btn-complete" style="background: #ef4444;" onclick="cancelApp(${a.id})">Otkaži</button>
+                `;
+            } else if (status === 'Otkazan') {
+                actionButtons = `<span style="color: #ef4444; font-size: 0.8rem; font-weight: bold;">OTKAZANO</span>`;
+            } else if (status === 'Završen') {
+                actionButtons = `<span style="color: #4ade80; font-size: 0.8rem; font-weight: bold;">ISPLAĆENO</span>`;
+            }
+
+            return `
+            <div class="appointment-card ${status === 'Završen' ? 'completed' : ''}" style="${status === 'Otkazan' ? 'opacity: 0.5;' : ''}">
+                <div style="width: 70px; font-weight: bold; color: ${status === 'Otkazan' ? '#ef4444' : '#6366f1'};">${a.time}</div>
                 <div style="flex-grow: 1;">
                     <h4 style="margin: 0; color: #fafafa;">${a.customer_name}</h4>
                     <p style="margin: 4px 0 0; color: #a1a1aa; font-size: 0.85rem;">${a.service} — ${a.date}</p>
                 </div>
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    ${a.status === 'Na čekanju' 
-                        ? `<button class="btn-complete" onclick="complete(${a.id})">Završi</button>` 
-                        : '<span style="color: #4ade80; font-size: 0.8rem; font-weight: bold;">ISPLAĆENO</span>'}
-                    <button onclick="del(${a.id})" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 1.2rem;">&times;</button>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    ${actionButtons}
+                    <button onclick="del(${a.id})" style="background: none; border: none; color: #52525b; cursor: pointer; font-size: 1.5rem; margin-left: 10px;" title="Obriši trajno">&times;</button>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
     } catch (err) {
         console.error("Greška pri učitavanju dashboard-a:", err);
     }
 }
 
-// Funkcija za završavanje termina
+// Funkcija za završavanje termina (Plaćeno)
 async function complete(id) {
     await fetch(`/api/appointments/${id}/complete`, { method: 'PUT' });
     loadDashboard();
 }
 
-// Funkcija za brisanje termina
+// Funkcija za prihvatanje termina
+async function acceptApp(id) {
+    await fetch(`/api/appointments/${id}/accept`, { method: 'PUT' });
+    loadDashboard();
+}
+
+// Funkcija za otkazivanje termina
+async function cancelApp(id) {
+    if (confirm("Da li ste sigurni da želite da otkažete ovaj termin?")) {
+        await fetch(`/api/appointments/${id}/cancel`, { method: 'PUT' });
+        loadDashboard();
+    }
+}
+
+// Funkcija za trajno brisanje termina (crveno X)
 async function del(id) {
-    if (confirm("Da li ste sigurni da želite da obrišete ovaj termin?")) {
+    if (confirm("Da li ste sigurni da želite trajno da obrišete ovaj termin iz baze?")) {
         await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
         loadDashboard();
     }
 }
 
-// Otvaranje modala i punjenje dropdown-a
+// Otvaranje modala za novi termin (Admin panel)
 document.getElementById('openModalBtn').onclick = async () => {
     document.getElementById('modalOverlay').style.display = 'flex';
     const res = await fetch('/api/services');
@@ -66,7 +100,7 @@ document.getElementById('openModalBtn').onclick = async () => {
     }
 };
 
-// Čuvanje novog termina
+// Čuvanje novog termina iz admin panela
 document.getElementById('saveBtn').onclick = async () => {
     const name = document.getElementById('custName').value;
     const service = document.getElementById('serviceSelect').value;
@@ -87,10 +121,9 @@ document.getElementById('saveBtn').onclick = async () => {
     });
 
     document.getElementById('modalOverlay').style.display = 'none';
-    // Resetuj polja
     document.getElementById('custName').value = '';
     loadDashboard();
 };
 
-// Pokreni učitavanje
+// Pokretanje
 loadDashboard();

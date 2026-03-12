@@ -28,31 +28,12 @@ db.serialize(() => {
     )`);
 });
 
-//Routes for pages
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
-});
-
-// Route for the appointments page
-app.get('/rezervacija', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'html', 'rezervacija.html'));
-});
-
-// Route for the services page
-app.get('/usluge', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'html', 'usluge.html'));
-});
-
-// Route for statistics/analytics page
-app.get('/statistika', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'html', 'statistika.html'));
-});
-
-// Route for about page
-app.get('/o-nama', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'html', 'about.html'));
-});
-
+// Routes for pages
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'html', 'index.html')));
+app.get('/rezervacija', (req, res) => res.sendFile(path.join(__dirname, 'public', 'html', 'rezervacija.html')));
+app.get('/usluge', (req, res) => res.sendFile(path.join(__dirname, 'public', 'html', 'usluge.html')));
+app.get('/statistika', (req, res) => res.sendFile(path.join(__dirname, 'public', 'html', 'statistika.html')));
+app.get('/o-nama', (req, res) => res.sendFile(path.join(__dirname, 'public', 'html', 'about.html')));
 
 // API ZA USLUGE
 app.get('/api/services', (req, res) => {
@@ -79,15 +60,21 @@ app.post('/api/appointments', (req, res) => {
     const { customer_name, service, date, time } = req.body;
     db.get("SELECT price FROM services WHERE name = ?", [service], (err, row) => {
         const price = row ? row.price : 0;
-        db.run("INSERT INTO appointments (customer_name, service, price, date, time) VALUES (?, ?, ?, ?, ?)", 
+        db.run("INSERT INTO appointments (customer_name, service, price, date, time, status) VALUES (?, ?, ?, ?, ?, 'Na čekanju')", 
         [customer_name, service, price, date, time], () => res.json({ status: "ok" }));
     });
 });
 app.put('/api/appointments/:id/complete', (req, res) => {
     db.run("UPDATE appointments SET status = 'Završen' WHERE id = ?", req.params.id, () => res.json({ status: "ok" }));
 });
+app.put('/api/appointments/:id/accept', (req, res) => {
+    db.run("UPDATE appointments SET status = 'Prihvaćen' WHERE id = ?", req.params.id, () => res.json({ status: "ok" }));
+});
+app.put('/api/appointments/:id/cancel', (req, res) => {
+    db.run("UPDATE appointments SET status = 'Otkazan' WHERE id = ?", req.params.id, () => res.json({ status: "ok" }));
+});
 app.delete('/api/appointments/:id', (req, res) => {
     db.run("DELETE FROM appointments WHERE id = ?", req.params.id, () => res.json({ status: "ok" }));
 });
 
-app.listen(3000, () => console.log("Server: http://localhost:3000"));
+app.listen(3000, () => console.log("Server radi na: http://localhost:3000"));

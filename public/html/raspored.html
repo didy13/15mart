@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TerminKO | Raspored</title>
+    <link rel="stylesheet" href="/css/admin-style.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <a href="/"><div class="logo">Zakaži<span>SE</span></div></a>
+            <nav>
+                <a href="/">📊 Dashboard</a>
+                <a href="/usluge">🛠️ Usluge</a>
+                <a href="/raspored" class="active">📅 Raspored</a>
+                <a href="/rezervacija">📚 Rezervacija</a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header style="display:flex; justify-content:space-between; margin-bottom:2rem;">
+                <h1>Raspored termina</h1>
+                <button class="btn-primary" id="openModalBtn">+ Novi raspored</button>
+            </header>
+            <div id="schedules-list"></div>
+        </main>
+    </div>
+
+    <!-- Modal za novi raspored -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Dodaj raspored za dan</h2>
+            <input type="date" id="scheduleDate" placeholder="Datum">
+            <input type="time" id="startTime" placeholder="Početak">
+            <input type="time" id="endTime" placeholder="Kraj">
+            <input type="number" id="slotDuration" placeholder="Trajanje termina (min)" value="30" min="5" step="5">
+            <button class="btn-primary" id="saveScheduleBtn">Sačuvaj</button>
+            <button onclick="document.getElementById('modalOverlay').style.display='none'" style="background:none; border:none; color:white; cursor:pointer; margin-top:10px; width:100%;">Odustani</button>
+        </div>
+    </div>
+
+    <script src="/js/raspored.js"></script>
+</body>
+</html>

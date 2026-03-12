@@ -11,7 +11,8 @@
         <div id="booking-form">
             <input type="text" id="cName" placeholder="Vaše ime">
             <select id="cService"></select>
-            <input type="date" id="cDate"><input type="time" id="cTime">
+            <input type="date" id="cDate">
+            <select id="cTime" disabled><option value="">Prvo izaberite datum</option></select>
             <button class="btn-book" onclick="book()">Potvrdi</button>
         </div>
         <div id="success-msg"><h2>Uspešno! 🎉</h2><button onclick="location.reload()" style="background:none; border:1px solid #27272a; color:white; padding:10px; border-radius:10px; margin-top:20px; cursor:pointer; width:100%;">Zakaži ponovo</button></div>

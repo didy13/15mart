@@ -1,6 +1,41 @@
-async function loadDashboard() {
+// Global variable to store current filter date
+let currentFilterDate = '';
+
+// Load available dates for the filter dropdown
+async function loadDateFilter() {
     try {
-        // 1. Učitaj statistiku
+        const res = await fetch('/api/schedules/dates');
+        const dates = await res.json();
+        const select = document.getElementById('filterDate');
+        // Keep the "Svi datumi" option
+        select.innerHTML = '<option value="">Svi datumi</option>';
+        dates.forEach(date => {
+            const option = document.createElement('option');
+            option.value = date;
+            // Format date for display (optional)
+            const dateObj = new Date(date + 'T00:00:00');
+            option.textContent = dateObj.toLocaleDateString('sr-RS');
+            select.appendChild(option);
+        });
+        // Add event listener
+        select.addEventListener('change', (e) => {
+            currentFilterDate = e.target.value;
+            loadDashboard(currentFilterDate);
+        });
+    } catch (err) {
+        console.error('Greška pri učitavanju datuma:', err);
+    }
+}
+
+async function loadDashboard(dateFilter = '') {
+    try {
+        // Build URL with optional date filter
+        let url = '/api/appointments';
+        if (dateFilter) {
+            url += `?date=${dateFilter}`;
+        }
+        
+        // 1. Učitaj statistiku (always overall, not filtered)
         const statsRes = await fetch('/api/stats');
         const stats = await statsRes.json();
         
@@ -8,18 +43,18 @@ async function loadDashboard() {
         document.getElementById('stat-customers').innerText = stats.customers || 0;
         document.getElementById('stat-total').innerText = stats.total || 0;
 
-        // 2. Učitaj termine
-        const aRes = await fetch('/api/appointments');
+        // 2. Učitaj termine (filtered by date if selected)
+        const aRes = await fetch(url);
         const appointments = await aRes.json();
         const list = document.getElementById('appointment-list');
         
         if (appointments.length === 0) {
-            list.innerHTML = '<p style="color: #a1a1aa; padding: 20px; text-align: center;">Trenutno nema zakazanih termina u bazi.</p>';
+            list.innerHTML = '<p style="color: #a1a1aa; padding: 20px; text-align: center;">Nema zakazanih termina' + 
+                (dateFilter ? ' za izabrani datum.' : ' u bazi.') + '</p>';
             return;
         }
 
         list.innerHTML = appointments.map(a => {
-            // Ako stari termini nemaju status, računamo ih kao 'Na čekanju'
             const status = a.status || 'Na čekanju'; 
             let actionButtons = '';
             
@@ -61,20 +96,20 @@ async function loadDashboard() {
 // Funkcija za završavanje termina (Plaćeno)
 async function complete(id) {
     await fetch(`/api/appointments/${id}/complete`, { method: 'PUT' });
-    loadDashboard();
+    loadDashboard(currentFilterDate);
 }
 
 // Funkcija za prihvatanje termina
 async function acceptApp(id) {
     await fetch(`/api/appointments/${id}/accept`, { method: 'PUT' });
-    loadDashboard();
+    loadDashboard(currentFilterDate);
 }
 
 // Funkcija za otkazivanje termina
 async function cancelApp(id) {
     if (confirm("Da li ste sigurni da želite da otkažete ovaj termin?")) {
         await fetch(`/api/appointments/${id}/cancel`, { method: 'PUT' });
-        loadDashboard();
+        loadDashboard(currentFilterDate);
     }
 }
 
@@ -82,7 +117,7 @@ async function cancelApp(id) {
 async function del(id) {
     if (confirm("Da li ste sigurni da želite trajno da obrišete ovaj termin iz baze?")) {
         await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
-        loadDashboard();
+        loadDashboard(currentFilterDate);
     }
 }
 
@@ -122,8 +157,12 @@ document.getElementById('saveBtn').onclick = async () => {
 
     document.getElementById('modalOverlay').style.display = 'none';
     document.getElementById('custName').value = '';
-    loadDashboard();
+    // Reload with current filter
+    loadDashboard(currentFilterDate);
+    // Also refresh date filter dropdown (new date might appear if schedule exists)
+    loadDateFilter();
 };
 
 // Pokretanje
+loadDateFilter();
 loadDashboard();

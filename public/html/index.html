@@ -9,17 +9,32 @@
     <div class="app-container">
         <aside class="sidebar">
             <a href="/"><div class="logo">Zakaži<span>SE</span></div></a>
-            <nav><a href="/" class="active">📊 Dashboard</a><a href="/usluge">🛠️ Usluge</a><a href="/rezervacija">📚 Rezervacija</a></nav>
+            <nav>
+                <a href="/" class="active">📊 Dashboard</a>
+                <a href="/usluge">🛠️ Usluge</a>
+                <a href="/raspored">📅 Raspored</a>
+                <a href="/rezervacija">📚 Rezervacija</a>
+            </nav>
         </aside>
         <main class="main-content">
             <header style="display:flex; justify-content:space-between; margin-bottom:2rem;">
-                <h1>Dashboard</h1><button class="btn-primary" id="openModalBtn">+ Novi termin</button>
+                <h1>Dashboard</h1>
+                <button class="btn-primary" id="openModalBtn">+ Novi termin</button>
             </header>
             <div class="stats-grid">
                 <div class="stat-card"><p>PRIHOD</p><h3 id="stat-revenue">0 RSD</h3></div>
                 <div class="stat-card"><p>KLIJENTI</p><h3 id="stat-customers">0</h3></div>
                 <div class="stat-card"><p>UKUPNO</p><h3 id="stat-total">0</h3></div>
             </div>
+
+            <!-- Filter po datumu -->
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px; background: #18181b; padding: 15px; border-radius: 12px; border: 1px solid #27272a;">
+                <label for="filterDate" style="color: #a1a1aa;">Filtriraj po datumu:</label>
+                <select id="filterDate" style="width: auto; min-width: 200px;">
+                    <option value="">Svi datumi</option>
+                </select>
+            </div>
+
             <div id="appointment-list"></div>
         </main>
     </div>

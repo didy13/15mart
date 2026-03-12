@@ -26,12 +26,21 @@ db.serialize(() => {
         time TEXT,
         status TEXT DEFAULT 'Na čekanju'
     )`);
+    // NEW: daily schedules table
+    db.run(`CREATE TABLE IF NOT EXISTS daily_schedules (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date TEXT NOT NULL,
+        start_time TEXT NOT NULL,
+        end_time TEXT NOT NULL,
+        slot_duration INTEGER NOT NULL
+    )`);
 });
 
 // Routes for pages
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'html', 'index.html')));
 app.get('/rezervacija', (req, res) => res.sendFile(path.join(__dirname, 'public', 'html', 'rezervacija.html')));
 app.get('/usluge', (req, res) => res.sendFile(path.join(__dirname, 'public', 'html', 'usluge.html')));
+app.get('/raspored', (req, res) => res.sendFile(path.join(__dirname, 'public', 'html', 'raspored.html')));
 app.get('/statistika', (req, res) => res.sendFile(path.join(__dirname, 'public', 'html', 'statistika.html')));
 app.get('/o-nama', (req, res) => res.sendFile(path.join(__dirname, 'public', 'html', 'about.html')));
 
@@ -49,7 +58,15 @@ app.delete('/api/services/:id', (req, res) => {
 
 // API ZA TERMINE I ANALITIKU
 app.get('/api/appointments', (req, res) => {
-    db.all("SELECT * FROM appointments ORDER BY date ASC, time ASC", (err, rows) => res.json(rows));
+    const { date } = req.query;
+    let query = "SELECT * FROM appointments";
+    const params = [];
+    if (date) {
+        query += " WHERE date = ?";
+        params.push(date);
+    }
+    query += " ORDER BY date ASC, time ASC";
+    db.all(query, params, (err, rows) => res.json(rows));
 });
 app.get('/api/stats', (req, res) => {
     db.get(`SELECT SUM(CASE WHEN status='Završen' THEN price ELSE 0 END) as revenue, 
@@ -75,6 +92,61 @@ app.put('/api/appointments/:id/cancel', (req, res) => {
 });
 app.delete('/api/appointments/:id', (req, res) => {
     db.run("DELETE FROM appointments WHERE id = ?", req.params.id, () => res.json({ status: "ok" }));
+});
+
+// API ZA RASPORED (daily schedules)
+app.get('/api/schedules', (req, res) => {
+    const { date } = req.query;
+    let query = "SELECT * FROM daily_schedules";
+    const params = [];
+    if (date) {
+        query += " WHERE date = ?";
+        params.push(date);
+    }
+    query += " ORDER BY date DESC";
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+        } else {
+            res.json(rows);
+        }
+    });
+});
+
+app.post('/api/schedules', (req, res) => {
+    const { date, start_time, end_time, slot_duration } = req.body;
+    db.run(
+        "INSERT INTO daily_schedules (date, start_time, end_time, slot_duration) VALUES (?, ?, ?, ?)",
+        [date, start_time, end_time, slot_duration],
+        function(err) {
+            if (err) {
+                res.status(500).json({ error: err.message });
+            } else {
+                res.json({ id: this.lastID });
+            }
+        }
+    );
+});
+
+app.delete('/api/schedules/:id', (req, res) => {
+    db.run("DELETE FROM daily_schedules WHERE id = ?", req.params.id, function(err) {
+        if (err) {
+            res.status(500).json({ error: err.message });
+        } else {
+            res.json({ deleted: true });
+        }
+    });
+});
+
+// NEW: Get all distinct dates from schedules (for filter dropdown)
+app.get('/api/schedules/dates', (req, res) => {
+    db.all("SELECT DISTINCT date FROM daily_schedules ORDER BY date DESC", (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+        } else {
+            res.json(rows.map(row => row.date));
+        }
+    });
 });
 
 app.listen(3000, () => console.log("Server radi na: http://localhost:3000"));

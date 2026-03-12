@@ -24,30 +24,39 @@ async function del(id) {
 document.getElementById('openModalBtnServices').onclick = async () => {
     document.getElementById('appointmentModalOverlay').style.display = 'flex';
     
-    const res = await fetch('/api/services');
-    const services = await res.json();
-    const select = document.getElementById('serviceSelect');
-    
+    const servicesRes = await fetch('/api/services');
+    const services = await servicesRes.json();
+    const serviceSelect = document.getElementById('serviceSelect');
     if (services.length === 0) {
-        select.innerHTML = '<option value="">Prvo dodajte uslugu!</option>';
+        serviceSelect.innerHTML = '<option value="">Prvo dodajte uslugu!</option>';
     } else {
-        select.innerHTML = services.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+        serviceSelect.innerHTML = services.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+    }
+
+    const mastersRes = await fetch('/api/masters');
+    const masters = await mastersRes.json();
+    const masterSelect = document.getElementById('masterSelectServices');
+    if (masters.length === 0) {
+        masterSelect.innerHTML = '<option value="">Nema dostupnih majstora</option>';
+    } else {
+        masterSelect.innerHTML = '<option value="">Izaberite majstora (opciono)</option>' +
+            masters.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
     }
 };
 
-// Cuvanje novog termina
 document.getElementById('saveAppointmentBtn').onclick = async () => {
     const name = document.getElementById('custName').value;
     const service = document.getElementById('serviceSelect').value;
+    const master = document.getElementById('masterSelectServices').value;
     const date = document.getElementById('appDate').value;
     const time = document.getElementById('appTime').value;
 
     if (!name || !service || !date || !time) {
-        alert("Sva polja su obavezna!");
+        alert("Ime, usluga, datum i vreme su obavezni!");
         return;
     }
 
-    const body = { customer_name: name, service, date, time };
+    const body = { customer_name: name, service, master_name: master || null, date, time };
     
     const response = await fetch('/api/appointments', {
         method: 'POST',
@@ -66,7 +75,6 @@ document.getElementById('saveAppointmentBtn').onclick = async () => {
     }
 };
 
-// Zatvaranje modala klikom na pozadinu
 window.onclick = function(event) {
     const modal = document.getElementById('appointmentModalOverlay');
     if (event.target === modal) {

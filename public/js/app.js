@@ -1,23 +1,18 @@
-// Global variable to store current filter date
 let currentFilterDate = '';
 
-// Load available dates for the filter dropdown
 async function loadDateFilter() {
     try {
         const res = await fetch('/api/schedules/dates');
         const dates = await res.json();
         const select = document.getElementById('filterDate');
-        // Keep the "Svi datumi" option
         select.innerHTML = '<option value="">Svi datumi</option>';
         dates.forEach(date => {
             const option = document.createElement('option');
             option.value = date;
-            // Format date for display (optional)
             const dateObj = new Date(date + 'T00:00:00');
             option.textContent = dateObj.toLocaleDateString('sr-RS');
             select.appendChild(option);
         });
-        // Add event listener
         select.addEventListener('change', (e) => {
             currentFilterDate = e.target.value;
             loadDashboard(currentFilterDate);
@@ -29,13 +24,11 @@ async function loadDateFilter() {
 
 async function loadDashboard(dateFilter = '') {
     try {
-        // Build URL with optional date filter
         let url = '/api/appointments';
         if (dateFilter) {
             url += `?date=${dateFilter}`;
         }
         
-        // 1. Učitaj statistiku (always overall, not filtered)
         const statsRes = await fetch('/api/stats');
         const stats = await statsRes.json();
         
@@ -43,7 +36,6 @@ async function loadDashboard(dateFilter = '') {
         document.getElementById('stat-customers').innerText = stats.customers || 0;
         document.getElementById('stat-total').innerText = stats.total || 0;
 
-        // 2. Učitaj termine (filtered by date if selected)
         const aRes = await fetch(url);
         const appointments = await aRes.json();
         const list = document.getElementById('appointment-list');
@@ -80,6 +72,7 @@ async function loadDashboard(dateFilter = '') {
                 <div style="flex-grow: 1;">
                     <h4 style="margin: 0; color: #fafafa;">${a.customer_name}</h4>
                     <p style="margin: 4px 0 0; color: #a1a1aa; font-size: 0.85rem;">${a.service} — ${a.date}</p>
+                    ${a.master_name ? `<p style="margin: 2px 0 0; color: #a1a1aa; font-size: 0.8rem;">👨‍🔧 ${a.master_name}</p>` : ''}
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     ${actionButtons}
@@ -93,27 +86,20 @@ async function loadDashboard(dateFilter = '') {
     }
 }
 
-// Funkcija za završavanje termina (Plaćeno)
 async function complete(id) {
     await fetch(`/api/appointments/${id}/complete`, { method: 'PUT' });
     loadDashboard(currentFilterDate);
 }
-
-// Funkcija za prihvatanje termina
 async function acceptApp(id) {
     await fetch(`/api/appointments/${id}/accept`, { method: 'PUT' });
     loadDashboard(currentFilterDate);
 }
-
-// Funkcija za otkazivanje termina
 async function cancelApp(id) {
     if (confirm("Da li ste sigurni da želite da otkažete ovaj termin?")) {
         await fetch(`/api/appointments/${id}/cancel`, { method: 'PUT' });
         loadDashboard(currentFilterDate);
     }
 }
-
-// Funkcija za trajno brisanje termina (crveno X)
 async function del(id) {
     if (confirm("Da li ste sigurni da želite trajno da obrišete ovaj termin iz baze?")) {
         await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
@@ -121,33 +107,42 @@ async function del(id) {
     }
 }
 
-// Otvaranje modala za novi termin (Admin panel)
 document.getElementById('openModalBtn').onclick = async () => {
     document.getElementById('modalOverlay').style.display = 'flex';
-    const res = await fetch('/api/services');
-    const services = await res.json();
-    const select = document.getElementById('serviceSelect');
     
+    const servicesRes = await fetch('/api/services');
+    const services = await servicesRes.json();
+    const serviceSelect = document.getElementById('serviceSelect');
     if (services.length === 0) {
-        select.innerHTML = '<option value="">Prvo dodajte usluge u meniju!</option>';
+        serviceSelect.innerHTML = '<option value="">Prvo dodajte usluge!</option>';
     } else {
-        select.innerHTML = services.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+        serviceSelect.innerHTML = services.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+    }
+
+    const mastersRes = await fetch('/api/masters');
+    const masters = await mastersRes.json();
+    const masterSelect = document.getElementById('masterSelectAdmin');
+    if (masters.length === 0) {
+        masterSelect.innerHTML = '<option value="">Nema dostupnih majstora</option>';
+    } else {
+        masterSelect.innerHTML = '<option value="">Izaberite majstora (opciono)</option>' +
+            masters.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
     }
 };
 
-// Čuvanje novog termina iz admin panela
 document.getElementById('saveBtn').onclick = async () => {
     const name = document.getElementById('custName').value;
     const service = document.getElementById('serviceSelect').value;
+    const master = document.getElementById('masterSelectAdmin').value;
     const date = document.getElementById('appDate').value;
     const time = document.getElementById('appTime').value;
 
     if (!name || !service || !date || !time) {
-        alert("Sva polja su obavezna!");
+        alert("Ime, usluga, datum i vreme su obavezni!");
         return;
     }
 
-    const body = { customer_name: name, service, date, time };
+    const body = { customer_name: name, service, master_name: master || null, date, time };
     
     await fetch('/api/appointments', {
         method: 'POST',
@@ -157,12 +152,9 @@ document.getElementById('saveBtn').onclick = async () => {
 
     document.getElementById('modalOverlay').style.display = 'none';
     document.getElementById('custName').value = '';
-    // Reload with current filter
     loadDashboard(currentFilterDate);
-    // Also refresh date filter dropdown (new date might appear if schedule exists)
     loadDateFilter();
 };
 
-// Pokretanje
 loadDateFilter();
 loadDashboard();

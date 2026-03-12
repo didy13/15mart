@@ -11,7 +11,20 @@ async function loadServices() {
     }
 }
 
-// Generisanje vremenskih slotova na osnovu rasporeda i zauzetih termina
+async function loadMasters() {
+    const res = await fetch('/api/masters');
+    const masters = await res.json();
+    const select = document.getElementById('cMaster');
+    if (masters.length === 0) {
+        select.innerHTML = '<option value="">Trenutno nema majstora</option>';
+        select.disabled = true;
+    } else {
+        select.innerHTML = '<option value="">Izaberite majstora (opciono)</option>' +
+            masters.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
+        select.disabled = false;
+    }
+}
+
 async function loadAvailableTimes() {
     const dateInput = document.getElementById('cDate');
     const timeSelect = document.getElementById('cTime');
@@ -22,7 +35,6 @@ async function loadAvailableTimes() {
         return;
     }
 
-    // Dohvati raspored za taj dan
     const scheduleRes = await fetch(`/api/schedules?date=${date}`);
     const schedules = await scheduleRes.json();
     if (schedules.length === 0) {
@@ -30,14 +42,12 @@ async function loadAvailableTimes() {
         timeSelect.disabled = true;
         return;
     }
-    const schedule = schedules[0]; // uzmi prvi (ako ih ima više, može se doraditi)
+    const schedule = schedules[0];
 
-    // Dohvati već zakazane termine za taj dan
     const appRes = await fetch(`/api/appointments?date=${date}`);
     const appointments = await appRes.json();
     const bookedTimes = appointments.map(a => a.time);
 
-    // Generiši slotove
     const start = schedule.start_time;
     const end = schedule.end_time;
     const duration = schedule.slot_duration;
@@ -75,15 +85,16 @@ function generateTimeSlots(start, end, durationMinutes) {
 async function book() {
     const name = document.getElementById('cName').value;
     const service = document.getElementById('cService').value;
+    const master = document.getElementById('cMaster').value;
     const date = document.getElementById('cDate').value;
     const time = document.getElementById('cTime').value;
 
     if (!name || !service || !date || !time) {
-        alert("Sva polja su obavezna!");
+        alert("Ime, usluga, datum i vreme su obavezni!");
         return;
     }
 
-    const body = { customer_name: name, service, date, time };
+    const body = { customer_name: name, service, master_name: master || null, date, time };
     const res = await fetch('/api/appointments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -97,12 +108,9 @@ async function book() {
     }
 }
 
-// Postavi minimalni datum na danas
 const today = new Date().toISOString().split('T')[0];
 document.getElementById('cDate').setAttribute('min', today);
-
-// Event listener za promenu datuma
 document.getElementById('cDate').addEventListener('change', loadAvailableTimes);
 
-// Inicijalno učitavanje usluga
 loadServices();
+loadMasters();

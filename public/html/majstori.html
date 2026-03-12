@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TerminKO | Raspored</title>
+    <title>TerminKO | Majstori</title>
     <link rel="stylesheet" href="/css/admin-style.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -12,33 +12,32 @@
             <nav>
                 <a href="/">📊 Dashboard</a>
                 <a href="/usluge">🛠️ Usluge</a>
-                <a href="/majstori">👨‍🔧 Majstori</a>
-                <a href="/raspored" class="active">📅 Raspored</a>
-                <a href="/rezervacija" target="_blank">📚 Rezervacija</a>
+                <a href="/majstori" class="active">👨‍🔧 Majstori</a>
+                <a href="/raspored">📅 Raspored</a>
+                <a href="/rezervacija" target = "_blank">📚 Rezervacija</a>
             </nav>
         </aside>
         <main class="main-content">
             <header style="display:flex; justify-content:space-between; margin-bottom:2rem;">
-                <h1>Raspored termina</h1>
-                <button class="btn-primary" id="openModalBtn">+ Novi raspored</button>
+                <h1>Majstori</h1>
+                <button class="btn-primary" id="openModalBtn">+ Novi majstor</button>
             </header>
-            <div id="schedules-list"></div>
+            <div id="masters-list"></div>
         </main>
     </div>
 
-    <!-- Modal za novi raspored -->
+    <!-- Modal za novog majstora -->
     <div id="modalOverlay" class="modal-overlay">
         <div class="modal-content">
-            <h2>Dodaj raspored za dan</h2>
-            <input type="date" id="scheduleDate" placeholder="Datum">
-            <input type="time" id="startTime" placeholder="Početak">
-            <input type="time" id="endTime" placeholder="Kraj">
-            <input type="number" id="slotDuration" placeholder="Trajanje termina (min)" value="30" min="5" step="5">
-            <button class="btn-primary" id="saveScheduleBtn">Sačuvaj</button>
+            <h2>Dodaj majstora</h2>
+            <input type="text" id="masterName" placeholder="Ime i prezime">
+            <input type="url" id="masterImage" placeholder="URL slike (opciono)">
+            <p style="color: #a1a1aa; font-size: 0.8rem; margin-top: -5px;">Npr. https://randomuser.me/api/portraits/men/1.jpg</p>
+            <button class="btn-primary" id="saveMasterBtn">Sačuvaj</button>
             <button onclick="document.getElementById('modalOverlay').style.display='none'" style="background:none; border:none; color:white; cursor:pointer; margin-top:10px; width:100%;">Odustani</button>
         </div>
     </div>
 
-    <script src="/js/raspored.js"></script>
+    <script src="/js/majstori.js"></script>
 </body>
 </html>

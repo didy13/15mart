@@ -12,8 +12,9 @@
             <nav>
                 <a href="/">📊 Dashboard</a>
                 <a href="/usluge" class="active">🛠️ Usluge</a>
+                <a href="/majstori">👨‍🔧 Majstori</a>
                 <a href="/raspored">📅 Raspored</a>
-                <a href="/rezervacija">📚 Rezervacija</a>
+                <a href="/rezervacija" target = "_blank">📚 Rezervacija</a>
             </nav>
         </aside>
         <main class="main-content">
@@ -44,6 +45,9 @@
             <h2>Novi termin</h2>
             <input type="text" id="custName" placeholder="Ime klijenta">
             <select id="serviceSelect"></select>
+            <select id="masterSelectServices">
+                <option value="">Izaberite majstora (opciono)</option>
+            </select>
             <input type="date" id="appDate">
             <input type="time" id="appTime">
             <button class="btn-primary" id="saveAppointmentBtn">Sačuvaj</button>

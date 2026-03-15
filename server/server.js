@@ -8,8 +8,7 @@ const db = new sqlite3.Database(path.join(__dirname, 'database', 'termini.db'));
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public', 'html')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS services (
@@ -29,7 +28,7 @@ db.serialize(() => {
 });
 
 //Routes for pages
-app.get('/', (req, res) => {
+/*app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
 });
 
@@ -51,7 +50,7 @@ app.get('/statistika', (req, res) => {
 // Route for about page
 app.get('/o-nama', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'html', 'about.html'));
-});
+});*/
 
 
 // API ZA USLUGE
@@ -90,4 +89,4 @@ app.delete('/api/appointments/:id', (req, res) => {
     db.run("DELETE FROM appointments WHERE id = ?", req.params.id, () => res.json({ status: "ok" }));
 });
 
-app.listen(3000, () => console.log("Server: http://localhost:3000"));
+app.listen(3001, () => console.log("Server: http://localhost:3001"));

@@ -1,27 +1,8 @@
-import '../../public/css/style.css'; // Verify this path is correct
+import '../../public/css/style.css'; 
 import Head from '../components/Head';
 import Nav from '../components/Nav';
 import { useState, useEffect } from 'react';
-import { useAppointments } from '../../public/js/appjs';
 
-const AdminHook = () => {
-  const {
-    stats,
-    appointments,
-    services,
-    isModalOpen,
-    isConfirmOpen,
-    formData,
-    completeAppointment,
-    confirmDelete,
-    handleDelete,
-    openModal,
-    closeModal,
-    handleInputChange,
-    saveAppointment,
-    setIsConfirmOpen
-  } = useAppointments();
-}
 
 
 function Admin() {
@@ -44,6 +25,7 @@ function Admin() {
   // State for delete confirmation
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [errors, setErrors] = useState({});
 
   // State for form data
   const [formData, setFormData] = useState({
@@ -63,7 +45,7 @@ function Admin() {
   const loadDashboard = async () => {
     try {
       // 1. Load statistics
-      const statsRes = await fetch('/api/stats');
+      const statsRes = await fetch('http://localhost:3001/api/stats');
       const statsData = await statsRes.json();
       
       setStats({
@@ -73,7 +55,7 @@ function Admin() {
       });
 
       // 2. Load appointments
-      const aRes = await fetch('/api/appointments');
+      const aRes = await fetch('http://localhost:3001/api/appointments');
       const appointmentsData = await aRes.json();
       setAppointments(appointmentsData);
     } catch (err) {
@@ -84,7 +66,7 @@ function Admin() {
   // Load services for dropdown
   const loadServices = async () => {
     try {
-      const res = await fetch('/api/services');
+      const res = await fetch('http://localhost:3001/api/services');
       const servicesData = await res.json();
       setServices(servicesData);
     } catch (err) {
@@ -94,12 +76,25 @@ function Admin() {
 
   // Handle form input changes
   const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [id]: value
-    }));
-  };
+    const { name, value } = e.target;
+    
+    // Map the input names to formData properties
+    const nameToStateMap = {
+      'custName': 'custName',
+      'serviceSelect': 'service',
+      'appDate': 'date',
+      'appTime': 'time'
+    };
+    
+    const stateKey = nameToStateMap[name];
+    
+    if (stateKey) {
+      setFormData(prev => ({
+        ...prev,
+        [stateKey]: value
+      }));
+    }
+  }
 
   // Handle save appointment
   const handleSaveAppointment = async () => {
@@ -118,7 +113,7 @@ function Admin() {
         time 
       };
       
-      await fetch('/api/appointments', {
+      await fetch('http://localhost:3001/api/appointments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -143,7 +138,7 @@ function Admin() {
   // Handle complete appointment
   const handleComplete = async (id) => {
     try {
-      await fetch(`/api/appointments/${id}/complete`, { method: 'PUT' });
+      await fetch(`http://localhost:3001/api/appointments/${id}/complete`, { method: 'PUT' });
       loadDashboard();
     } catch (err) {
       console.error("Greška pri završavanju termina:", err);
@@ -159,7 +154,7 @@ function Admin() {
   // Handle confirm delete
   const handleConfirmDelete = async () => {
     try {
-      await fetch(`/api/appointments/${deleteId}`, { method: 'DELETE' });
+      await fetch(`http://localhost:3001/api/appointments/${deleteId}`, { method: 'DELETE' });
       setShowConfirm(false);
       loadDashboard();
     } catch (err) {
@@ -172,6 +167,7 @@ function Admin() {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return new Date(dateString).toLocaleDateString('sr-RS', options);
   };
+    
 
   return (
     <>
@@ -320,7 +316,7 @@ function Admin() {
             
             <input
               type="text"
-              id="custName"
+              name="custName"
               placeholder="Ime klijenta"
               value={formData.custName}
               onChange={handleInputChange}
@@ -337,7 +333,7 @@ function Admin() {
             />
             
             <select
-              id="serviceSelect"
+              name="serviceSelect"
               value={formData.service}
               onChange={handleInputChange}
               style={{
@@ -365,8 +361,8 @@ function Admin() {
             
             <input
               type="date"
-              id="appDate"
-              value={formData.date}
+              name="appDate"
+              value={formData.date || ''}
               onChange={handleInputChange}
               style={{
                 width: '100%',
@@ -382,8 +378,8 @@ function Admin() {
             
             <input
               type="time"
-              id="appTime"
-              value={formData.time}
+              name="appTime"
+              value={formData.time || ''}
               onChange={handleInputChange}
               style={{
                 width: '100%',

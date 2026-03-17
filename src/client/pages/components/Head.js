@@ -5,8 +5,6 @@ function Head({ pageTitle, styleTitle }) {
     <HelmetProvider>
       <Helmet>
         <title>{`TerminKO | ${pageTitle}`}</title>
-        <link rel="stylesheet" href={`/css/${styleTitle}.css/`}/>
-        <link rel="stylesheet" href="/css/style.css"/>
       </Helmet>
     </HelmetProvider>
   );

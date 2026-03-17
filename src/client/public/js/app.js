@@ -17,7 +17,7 @@ export const useAppointments = () => {
   // Load dashboard data
   const loadDashboard = async () => {
     try {
-      const statsRes = await fetch('/api/stats');
+      const statsRes = await fetch('http://localhost:3001/api/stats');
       const statsData = await statsRes.json();
       setStats({
         revenue: statsData.revenue || 0,
@@ -25,7 +25,7 @@ export const useAppointments = () => {
         total: statsData.total || 0
       });
 
-      const aRes = await fetch('/api/appointments');
+      const aRes = await fetch('http://localhost:3001/api/appointments');
       const appointmentsData = await aRes.json();
       setAppointments(appointmentsData);
     } catch (err) {
@@ -35,7 +35,7 @@ export const useAppointments = () => {
 
   const loadServices = async () => {
     try {
-      const res = await fetch('/api/services');
+      const res = await fetch('http://localhost:3001/api/services');
       const servicesData = await res.json();
       setServices(servicesData);
     } catch (err) {
@@ -45,7 +45,7 @@ export const useAppointments = () => {
 
   const completeAppointment = async (id) => {
     try {
-      await fetch(`/api/appointments/${id}/complete`, { method: 'PUT' });
+      await fetch(`http://localhost:3001/api/appointments/${id}/complete`, { method: 'PUT' });
       await loadDashboard();
     } catch (err) {
       console.error("Greška pri završavanju termina:", err);
@@ -59,7 +59,7 @@ export const useAppointments = () => {
 
   const handleDelete = async () => {
     try {
-      await fetch(`/api/appointments/${deleteId}`, { method: 'DELETE' });
+      await fetch(`http://localhost:3001/api/appointments/${deleteId}`, { method: 'DELETE' });
       setIsConfirmOpen(false);
       await loadDashboard();
     } catch (err) {
@@ -93,7 +93,7 @@ export const useAppointments = () => {
     }
 
     try {
-      await fetch('/api/appointments', {
+      await fetch('http://localhost:3001/api/appointments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

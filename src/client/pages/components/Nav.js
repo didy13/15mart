@@ -12,6 +12,9 @@ function Nav() {
                 <NavLink to="/usluge" className={({ isActive }) => isActive ? "active" : ""}>
                     🛠️ Usluge
                 </NavLink>
+                <NavLink to="/majstori" className={({ isActive }) => isActive ? "active" : ""}>
+                    👷‍♂️ Majstori
+                </NavLink>
                 <NavLink to="/rezervacija" className={({ isActive }) => isActive ? "active" : ""}>
                     📚 Rezervacija
                 </NavLink>

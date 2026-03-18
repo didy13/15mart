@@ -16,14 +16,27 @@ db.serialize(() => {
         name TEXT,
         price INTEGER
     )`);
+    db.run(`CREATE TABLE IF NOT EXISTS masters (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        image_url TEXT
+    )`);
     db.run(`CREATE TABLE IF NOT EXISTS appointments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         customer_name TEXT,
         service TEXT,
+        master_name TEXT,
         price INTEGER,
         date TEXT,
         time TEXT,
         status TEXT DEFAULT 'Na čekanju'
+    )`);
+    db.run(`CREATE TABLE IF NOT EXISTS daily_schedules (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date TEXT NOT NULL,
+        start_time TEXT NOT NULL,
+        end_time TEXT NOT NULL,
+        slot_duration INTEGER NOT NULL
     )`);
 });
 
@@ -87,6 +100,28 @@ app.put('/api/appointments/:id/complete', (req, res) => {
 });
 app.delete('/api/appointments/:id', (req, res) => {
     db.run("DELETE FROM appointments WHERE id = ?", req.params.id, () => res.json({ status: "ok" }));
+});
+
+// API ZA MAJSTORE
+app.get('/api/masters', (req, res) => {
+    db.all("SELECT * FROM masters ORDER BY name", (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+app.post('/api/masters', (req, res) => {
+    const { name, image_url } = req.body;
+    if (!name) return res.status(400).json({ error: "Name is required" });
+    db.run("INSERT INTO masters (name, image_url) VALUES (?, ?)", [name, image_url || null], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ id: this.lastID });
+    });
+});
+app.delete('/api/masters/:id', (req, res) => {
+    db.run("DELETE FROM masters WHERE id = ?", req.params.id, function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ deleted: true });
+    });
 });
 
 app.listen(3001, () => console.log("Server: http://localhost:3001"));

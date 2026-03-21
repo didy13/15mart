@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
@@ -45,5 +46,16 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+=======
+  "scripts": {
+    "ready": "npm install express sqlite3 cors path"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "path": "^0.12.7",
+    "router": "^2.2.0",
+    "sqlite3": "^5.1.7"
+>>>>>>> 0c79c07b8e2a456e33b0094c7ff7d650832d81c5
   }
 }

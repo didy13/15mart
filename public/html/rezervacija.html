@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zakaži | TerminKO</title>
+    <link rel="stylesheet" href="/css/client-style.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="client-card">
+        <a href="/"><div class="logo">Zakaži<span>SE</span></div></a>
+        <div id="booking-form">
+            <input type="text" id="cName" placeholder="Vaše ime">
+            <select id="cService"></select>
+            <select id="cMaster">
+                <option value="">Izaberite majstora (opciono)</option>
+            </select>
+            <input type="date" id="cDate">
+            <select id="cTime" disabled><option value="">Prvo izaberite datum</option></select>
+            <button class="btn-book" onclick="book()">Potvrdi</button>
+        </div>
+        <div id="success-msg"><h2>Uspešno! 🎉</h2><button onclick="location.reload()" style="background:none; border:1px solid #27272a; color:white; padding:10px; border-radius:10px; margin-top:20px; cursor:pointer; width:100%;">Zakaži ponovo</button></div>
+    </div>
+    <script src="/js/rezervacija.js"></script>
+</body>
+</html>

@@ -4,15 +4,17 @@ import Rezervacija from './Rezervacija';
 import '../../public/css/style.css';
 import Admin from '../pages/Admin';
 import Majstori from '../pages/Majstori';
+import SignIn from "../pages/SignIn";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element = {<Admin />} />
-        <Route path="/usluge" element={<Usluge />} />
-        <Route path="/majstori" element={<Majstori />} />
-        <Route path="/rezervacija" element={<Rezervacija />} />
+          <Route path="/" element={<SignIn />} />
+          <Route path="/admin" element={<Admin />} />  {/* OVA JE NEDOSTAJALA */}
+          <Route path="/usluge" element={<Usluge />} />
+          <Route path="/majstori" element={<Majstori />} />
+          <Route path="/rezervacija" element={<Rezervacija />} />
       </Routes>
     </BrowserRouter>
   );

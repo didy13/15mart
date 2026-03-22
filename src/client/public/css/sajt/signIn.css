@@ -1,0 +1,70 @@
+.signin-page {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #0f1c2e;
+  color: #e6edf7;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* puni ekran, ali ne dira body */
+}
+
+.signin-page .forma_kontejner {
+  padding: 2rem;
+  background-color: #1b2a44;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+#signin.forma_kontejner{
+background:#081425;
+padding:40px;
+border-radius:10px;
+width:300px;
+text-align:center;
+}
+
+#signin input{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:none;
+border-radius:5px;
+background:#1b3355;
+color:white;
+}
+
+#signin input::placeholder{
+color:#c9d6f0;
+}
+
+#signin button{
+width:80%;
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:5px;
+background:#1b3355;
+color:white;
+cursor:pointer;
+transition:0.25s;
+}
+
+#signin button:hover{
+background:#2a4a7a;
+}
+
+#signin .link_tekst{
+margin-top:10px;
+font-size:14px;
+}
+
+#signin.link_tekst a{
+color:#c9d6f0;
+text-decoration:none;
+}
+
+#signin .link_tekst a:hover{
+color:white;
+}

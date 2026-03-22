@@ -1,9 +1,0 @@
-:root { --bg: #09090b; --card: #18181b; --primary: #6366f1; --text: #fafafa; }
-body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-.client-card { background: var(--card); padding: 3rem; border-radius: 24px; border: 1px solid #27272a; width: 100%; max-width: 420px; text-align: center; }
-.logo { font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem; }
-.logo span { color: var(--primary); }
-input, select { width: 100%; padding: 1rem; background: #000; border: 1px solid #27272a; border-radius: 12px; color: white; margin-bottom: 1rem; }
-.btn-book { width: 100%; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; padding: 1.2rem; border-radius: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(99,102,241,0.4); }
-.btn-book:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.5); }
-#success-msg { display: none; }

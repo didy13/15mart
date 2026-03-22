@@ -52,16 +52,13 @@ padding:120px 60px;
 text-align:center;
 }
 
-img{
-border-radius:10px;
-box-shadow:5px 5px 10px rgba(0,0,0,0.5);
-}
-
 .glavna_slika{
 width:100%;
 height:500px;
 object-fit:cover;
 margin-top:40px;
+border-radius:10px;
+box-shadow:5px 5px 10px rgba(0,0,0,0.5);
 }
 
 .tekst_sekcija{
@@ -86,6 +83,8 @@ width:100%;
 height:200px;
 object-fit:cover;
 margin-top:20px;
+border-radius:10px;
+box-shadow:5px 5px 10px rgba(0,0,0,0.5);
 }
 
 .podeljena_sekcija{
@@ -99,6 +98,8 @@ align-items:center;
 flex:1;
 height:300px;
 object-fit:cover;
+border-radius:10px;
+box-shadow:5px 5px 10px rgba(0,0,0,0.5);
 }
 
 .podeljen_tekst{
@@ -121,4 +122,17 @@ background:#081425;
 color:#c9d6f0;
 text-align:center;
 padding:40px;
+}
+
+.logo img{
+height: 40px;
+}
+
+.logo{
+display:flex;
+align-items:center;
+text-decoration:none;
+font-size:20px;
+color:cyan;
+font-weight: bold;
 }

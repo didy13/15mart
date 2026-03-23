@@ -1,1 +1,2 @@
-Sajt koji preszentuje glavni projekat //todo MARE and MANI
+USER: admin
+PASSWORD: 123456

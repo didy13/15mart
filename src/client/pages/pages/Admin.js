@@ -25,7 +25,7 @@ function Admin() {
         });
         const data = await res.json();
 
-        if (!data.loggedIn) {
+        if (!data.loggedIn || !data.isAdmin) {
           navigate('/signin'); // ako nije logovan
           return;
         }
@@ -128,6 +128,40 @@ function Admin() {
     }
   };
 
+  const handleAccept = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/appointments/${id}/accept`, {
+        method: 'PUT',
+        credentials: 'include'
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Greška pri prihvatanju termina");
+      }
+      loadDashboard();
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Greška pri prihvatanju termina");
+    }
+  };
+
+  const handleReject = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/appointments/${id}/reject`, {
+        method: 'PUT',
+        credentials: 'include'
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Greška pri odbijanju termina");
+      }
+      loadDashboard();
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Greška pri odbijanju termina");
+    }
+  };
+
   // Delete appointment
   const handleDeleteClick = (id) => { setDeleteId(id); setShowConfirm(true); };
 
@@ -179,7 +213,14 @@ function Admin() {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                   {appt.status === 'Na čekanju' ? (
+                    <>
+                      <button onClick={() => handleAccept(appt.id)} style={{ padding: '5px 10px', background: '#4ade80', border: 'none', borderRadius: '4px', cursor: 'pointer', color: '#000', fontWeight: 'bold' }}>Prihvati</button>
+                      <button onClick={() => handleReject(appt.id)} style={{ padding: '5px 10px', background: '#f87171', border: 'none', borderRadius: '4px', cursor: 'pointer', color: '#fff', fontWeight: 'bold' }}>Odbij</button>
+                    </>
+                  ) : appt.status === 'Prihvaćen' ? (
                     <button className="btn-complete" onClick={() => handleComplete(appt.id)} style={{ padding: '5px 10px', background: '#4ade80', border: 'none', borderRadius: '4px', cursor: 'pointer', color: '#000', fontWeight: 'bold' }}>Završi</button>
+                  ) : appt.status === 'Odbijen' ? (
+                    <span style={{ color: '#f87171', fontSize: '0.8rem', fontWeight: 'bold' }}>ODBIJEN</span>
                   ) : (
                     <span style={{ color: '#4ade80', fontSize: '0.8rem', fontWeight: 'bold' }}>ISPLAĆENO</span>
                   )}

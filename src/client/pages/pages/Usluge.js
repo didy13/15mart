@@ -3,8 +3,10 @@ import Head from '../components/Head';
 import Nav from '../components/Nav';
 import adminStyles from '../../public/css/admin-style.module.css';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Usluge() {
+  const navigate = useNavigate();
   // State for services list
   const [services, setServices] = useState([]);
   // State for modal visibility
@@ -18,8 +20,17 @@ function Usluge() {
 
   // Load services on component mount
   useEffect(() => {
-    loadServices();
-  }, []);
+    const bootstrap = async () => {
+      const res = await fetch('http://localhost:3001/api/checkSession', { credentials: 'include' });
+      const data = await res.json();
+      if (!data.loggedIn || !data.isAdmin) {
+        navigate('/signin');
+        return;
+      }
+      loadServices();
+    };
+    bootstrap();
+  }, [navigate]);
 
   // Load services from API
   const loadServices = async () => {
@@ -28,7 +39,7 @@ function Usluge() {
     
     try {
       // Add the port number to the URL
-      const res = await fetch('http://localhost:3001/api/services');
+      const res = await fetch('http://localhost:3001/api/services', { credentials: 'include' });
       
       // Check if the response is OK (status in the range 200-299)
       if (!res.ok) {
@@ -57,6 +68,7 @@ function Usluge() {
       const res = await fetch('http://localhost:3001/api/services', { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' }, 
+        credentials: 'include',
         body: JSON.stringify(body) 
       });
       
@@ -82,7 +94,8 @@ function Usluge() {
     try {
       // Add the port number to the URL
       const res = await fetch(`http://localhost:3001/api/services/${id}`, { 
-        method: 'DELETE' 
+        method: 'DELETE',
+        credentials: 'include'
       });
       
       if (!res.ok) {
@@ -155,8 +168,7 @@ function Usluge() {
           id="modalOverlay" 
           className={adminStyles['modal-overlay']}
           onClick={(e) => {
-            // Close modal when clicking overlay
-            if (e.target.className === 'modal-overlay') {
+            if (e.target === e.currentTarget) {
               setIsModalOpen(false);
             }
           }}

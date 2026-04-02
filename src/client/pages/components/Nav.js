@@ -1,12 +1,12 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 
 function Nav() {
   return (
     <aside className="sidebar">
-          <a href="/"><div className="logo">Zakaži<span>SE</span></div></a>
+          <Link to="/"><div className="logo">Zakaži<span>SE</span></div></Link>
             <nav>
-                <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""}>
+                <NavLink to="/admin" className={({ isActive }) => isActive ? "active" : ""}>
                     📊 Dashboard
                 </NavLink>
                 <NavLink to="/usluge" className={({ isActive }) => isActive ? "active" : ""}>
@@ -17,6 +17,9 @@ function Nav() {
                 </NavLink>
                 <NavLink to="/rezervacija" className={({ isActive }) => isActive ? "active" : ""}>
                     📚 Rezervacija
+                </NavLink>
+                <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""}>
+                    ⬅️ Nazad na sajt
                 </NavLink>
             </nav>
       </aside>

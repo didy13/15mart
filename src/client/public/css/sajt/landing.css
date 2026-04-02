@@ -1,0 +1,137 @@
+.landing-page {
+  scroll-behavior: smooth;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f1c2e;
+  color: #e6edf7;
+}
+
+.landing-page .landing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  background: #081425;
+  position: sticky;
+  top: 0;
+}
+
+.landing-page .landing-nav a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #c9d6f0;
+  padding: 6px 10px;
+  border-radius: 5px;
+  transition: 0.25s;
+  display: inline-block;
+}
+
+.landing-page .landing-nav a:hover {
+  background: #1b3355;
+  color: #ffffff;
+}
+
+.landing-page .landing-signin {
+  text-decoration: none;
+  font-weight: bold;
+  color: #c9d6f0;
+  padding: 6px 12px;
+  border-radius: 5px;
+  transition: 0.25s;
+}
+
+.landing-page .landing-signin:hover {
+  background: #1b3355;
+  color: #ffffff;
+}
+
+.landing-page .glavna_sekcija {
+  padding: 120px 60px;
+  text-align: center;
+}
+
+.landing-page .glavna_slika {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  margin-top: 40px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.landing-page .tekst_sekcija {
+  padding: 80px 200px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.landing-page .kartice {
+  display: flex;
+  gap: 30px;
+  padding: 80px 60px;
+}
+
+.landing-page .kartica {
+  flex: 1;
+  text-align: center;
+}
+
+.landing-page .slika {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  margin-top: 20px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.landing-page .podeljena_sekcija {
+  display: flex;
+  padding: 80px 60px;
+  gap: 50px;
+  align-items: center;
+}
+
+.landing-page .podeljena_slika {
+  flex: 1;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.landing-page .podeljen_tekst {
+  flex: 1;
+  font-size: 18px;
+}
+
+.landing-page .naslov_tekst {
+  padding: 100px 60px;
+  text-align: center;
+}
+
+.landing-page .naslov_tekst p {
+  margin-top: 30px;
+  font-size: 18px;
+}
+
+.landing-page footer {
+  background: #081425;
+  color: #c9d6f0;
+  text-align: center;
+  padding: 40px;
+}
+
+.landing-page .landing-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 20px;
+  color: cyan;
+  font-weight: bold;
+  gap: 8px;
+}
+
+.landing-page .landing-logo img {
+  height: 40px;
+}

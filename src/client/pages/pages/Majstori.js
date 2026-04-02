@@ -3,10 +3,10 @@ import Head from '../components/Head';
 import Nav from '../components/Nav';
 import adminStyles from '../../public/css/admin-style.module.css';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Majstori() {
-  // State for services list
-  const [services, setServices] = useState([]);
+  const navigate = useNavigate();
   // State for modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
   // State for loading and error
@@ -14,17 +14,26 @@ function Majstori() {
   const [error, setError] = useState(null);
 
   const [masters, setMasters] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     image_url: ''
   });
 
   useEffect(() => {
-    loadMasters();
-  }, []);
+    const bootstrap = async () => {
+      const res = await fetch('http://localhost:3001/api/checkSession', { credentials: 'include' });
+      const data = await res.json();
+      if (!data.loggedIn || !data.isAdmin) {
+        navigate('/signin');
+        return;
+      }
+      loadMasters();
+    };
+    bootstrap();
+  }, [navigate]);
 
   const loadMasters = async () => {
+    setIsLoading(true);
     try {
       const res = await fetch('http://localhost:3001/api/masters');
       if (!res.ok) {
@@ -35,6 +44,8 @@ function Majstori() {
     } catch (error) {
       console.error('Error loading masters:', error);
       setError('Failed to load masters');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,6 +78,7 @@ function Majstori() {
       const res = await fetch('http://localhost:3001/api/masters', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(body)
       });
   
@@ -76,16 +88,15 @@ function Majstori() {
       const responseText = await res.text();
       console.log('Response text:', responseText);
       
-      let data;
       try {
-        data = JSON.parse(responseText);
+        JSON.parse(responseText);
       } catch (parseError) {
         console.error('Failed to parse JSON:', responseText);
         return;
       }
       
       if (res.ok) {
-        setShowModal(false);
+        setIsModalOpen(false);
         setFormData({ name: '', image_url: '' });
         loadMasters();
       }
@@ -98,7 +109,7 @@ function Majstori() {
   const deleteMaster = async (id) => {
     if (window.confirm('Da li ste sigurni da želite da obrišete ovog majstora?')) {
       try {
-        const res = await fetch(`http://localhost:3001/api/masters/${id}`, { method: 'DELETE' });
+        const res = await fetch(`http://localhost:3001/api/masters/${id}`, { method: 'DELETE', credentials: 'include' });
         if (res.ok) {
           loadMasters();
         } else {
@@ -185,7 +196,7 @@ function Majstori() {
             id="modalOverlay" 
             className={adminStyles['modal-overlay']}
             onClick={(e) => {
-              if (e.target.className === 'modal-overlay') {
+              if (e.target === e.currentTarget) {
                 setIsModalOpen(false);
               }
             }}

@@ -1,5 +1,6 @@
 import '../../public/css/style.css';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Head from '../components/Head';
 import clientStyles from '../../public/css/client-style.module.css';
 
@@ -9,18 +10,13 @@ function Rezervacija() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  // State for form data
+  const [apiError, setApiError] = useState('');
   const [formData, setFormData] = useState({
-    cName: '',
-    cService: '',
-    cDate: '',
-    cTime: ''
+    name: '',
+    service: '',
+    date: '',
+    time: ''
   });
-  // State for UI visibility
-  const [showSuccess, setShowSuccess] = useState(false);
-  // State for loading
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = () => {
     // First validate
@@ -45,31 +41,25 @@ function Rezervacija() {
         
         const data = await res.json();
         setServices(data);
-        setError(null);
+        setApiError('');
       } catch (err) {
-        setError(err.message);
+        setApiError(err.message);
         console.error('Error loading services:', err);
       } finally {
         setLoading(false);
       }
   }
 
-  // Book function - replaces document.getElementById calls
   async function book2() {
-    setIsSubmitting(true); // or setIsLoading(true) - be consistent
+    setIsSubmitting(true);
     
     try {
-      // Find the selected service to get its price
-      const selectedService = services.find(s => s.name === formData.cService);
-      
       const body = { 
         customer_name: formData.name,
         service: formData.service,
         date: formData.date,
         time: formData.time
       };
-      
-      console.log(body);
 
       const res = await fetch('http://localhost:3001/api/appointments', { 
         method: 'POST', 
@@ -78,14 +68,15 @@ function Rezervacija() {
       });
       
       if (res.ok) { 
-        setShowSuccess(true);
-        // Clear form or show success message
+        setIsSuccess(true);
+        setApiError('');
       } else {
-        // Handle error response
-        console.error('Booking failed');
+        const data = await res.json().catch(() => ({}));
+        setApiError(data.error || 'Booking failed');
       }
-    } catch (error) {
-      console.error('Error booking:', error);
+    } catch (err) {
+      console.error('Error booking:', err);
+      setApiError('Došlo je do greške pri zakazivanju.');
     } finally {
       setIsSubmitting(false);
     }
@@ -155,9 +146,9 @@ function Rezervacija() {
       <Head pageTitle="Zakaži" styleTitle="client-style" />
       
       <div className={clientStyles['client-card']}>
-        <a href="/">
+        <Link to="/">
           <div className={clientStyles['logo']}>Zakaži<span>SE</span></div>
-        </a>
+        </Link>
         
         {!isSuccess ? (
           <div id="booking-form">
@@ -172,6 +163,11 @@ function Rezervacija() {
                 fontSize: '14px'
               }}>
                 Molimo popunite sva polja
+              </div>
+            )}
+            {apiError && (
+              <div style={{ color: '#fc8181', marginBottom: '10px', fontSize: '14px' }}>
+                {apiError}
               </div>
             )}
             

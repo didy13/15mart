@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./../../public/css/sajt/signIn.css";
 
 function SignIn() {
@@ -30,7 +30,8 @@ function SignIn() {
         body: JSON.stringify({ username, password }),
       });
       const data = await res.json();
-      if (data.success) navigate("/admin");
+      if (data.success && data.role === "admin") navigate("/admin");
+      else if (data.success) alert("Nalog postoji, ali nema admin pristup.");
       else alert("Pogrešan username ili lozinka");
     } catch (err) {
       console.error(err);
@@ -47,6 +48,9 @@ function SignIn() {
       <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
       <button type="submit">Sign In</button>
     </form>
+    <p style={{ marginTop: 12 }}>
+      Nemate nalog? <Link to="/signup">Sign Up</Link>
+    </p>
   </div>
 </div>
  
